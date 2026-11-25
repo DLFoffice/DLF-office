@@ -8,7 +8,7 @@
    ===================================================================== */
 window.SUPABASE_CONFIG = {
   url: "https://snmpcldxpmbpseyzbahe.supabase.co",
-  anonKey: "snmpcldxpmbpseyzbahe",
+  anonKey: "sb_publishable_LJoNeJs_5EeYUzG3pQaJjw_qO4Wyr0m",
   table: "site_content",   // ตารางเก็บเนื้อหาเว็บ
   rowId: "main",           // แถวที่ใช้เก็บข้อมูล
   bucket: "media"          // Storage bucket สำหรับรูปภาพและไฟล์
