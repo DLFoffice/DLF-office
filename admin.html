@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ระบบจัดการเว็บไซต์</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Prompt:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a2a66;--gold:#c9a227;--line:#dde3ee;--bg:#f3f6fb;--muted:#667085}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Sarabun",sans-serif;background:var(--bg);color:#1b2333}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:7px 14px}
+button:disabled{opacity:.55;cursor:wait}
+.gold{background:var(--gold);color:var(--navy)}
+code{background:#eef1f6;padding:1px 5px;border-radius:4px}
+
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#0a2a66,#123d8f);padding:20px}
+.lbox{background:#fff;border-radius:16px;padding:32px;width:min(380px,100%);box-shadow:0 20px 50px rgba(0,0,0,.25);border-top:5px solid var(--gold)}
+.lbox h1{font:600 22px "Prompt";color:var(--navy);margin:0 0 4px}
+.lbox p{color:var(--muted);margin:0 0 20px}
+.lbox input{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:12px}
+.lbox button{width:100%;padding:11px;font-weight:700;border:0}
+.err{color:#c62828;font-size:14px;min-height:20px;margin-top:8px}
+
+/* app */
+#app{display:none}
+.bar{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff;display:flex;gap:8px;align-items:center;padding:10px 20px;flex-wrap:wrap;border-bottom:3px solid var(--gold)}
+.bar h1{font:600 18px "Prompt";margin:0}
+.bar .who{margin-right:auto;font-size:13px;opacity:.8;padding-left:10px}
+.bar button{border:0;font-weight:700}
+.status{font-size:13px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.15)}
+.status.dirty{background:#ffb300;color:#3b2a00}
+.wrap{display:grid;grid-template-columns:230px 1fr;gap:20px;max-width:1200px;margin:20px auto;padding:0 20px}
+.side{position:sticky;top:76px;align-self:start;background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.side a{display:block;padding:8px 12px;border-radius:8px;color:var(--navy);text-decoration:none;font-weight:600}
+.side a:hover{background:#eef3fc}
+.panel{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px;scroll-margin-top:80px}
+.panel>h2{font:600 20px "Prompt";color:var(--navy);margin:0 0 14px;border-left:5px solid var(--gold);padding-left:10px}
+.field{margin-bottom:12px}
+.field label{display:block;font-weight:700;font-size:14px;margin-bottom:4px;color:#344054}
+.field input[type=text],.field input[type=number],.field input[type=date],.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:2px solid #b9cdf5;border-color:#7ea2e8}
+.inrow{display:flex;gap:6px}.inrow input{flex:1;min-width:0}
+.up{white-space:nowrap;background:#eef3fc;color:var(--navy);font-weight:700;font-size:13px;padding:6px 10px}
+.check{display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0 16px}
+.item{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;background:#fbfcfe}
+.item-h{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.item-h b{margin-right:auto;color:var(--navy)}
+.item-h button{padding:3px 9px;font-size:13px}
+.del{color:#c62828}
+.add{background:#eef3fc;color:var(--navy);font-weight:700;border-style:dashed;width:100%;padding:10px}
+.sub{font:600 16px "Prompt";color:var(--navy);margin:14px 0 8px}
+.thumb{max-height:80px;max-width:100%;margin-top:6px;border-radius:6px;border:1px solid var(--line)}
+.flink{display:inline-block;margin-top:4px;font-size:13px;color:#1d5fd1}
+.hint{background:#fff8e1;border:1px solid #f0d98a;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:15px}
+.hint.off{background:#fdecea;border-color:#f5b7b1}
+.toast{position:fixed;bottom:20px;right:20px;background:#1b5e20;color:#fff;padding:10px 18px;border-radius:8px;display:none;z-index:50;max-width:90vw}
+.toast.bad{background:#c62828}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.side{position:static}}
+</style>
+</head>
+<body>
+
+<!-- หน้าเข้าสู่ระบบ -->
+<div id="login">
+  <form class="lbox" onsubmit="doLogin(event)">
+    <h1>ระบบจัดการเว็บไซต์</h1>
+    <p>มูลนิธิการศึกษาทางไกลผ่านดาวเทียม</p>
+    <input id="email" type="email" placeholder="อีเมล" required autocomplete="username">
+    <input id="pass" type="password" placeholder="รหัสผ่าน" required autocomplete="current-password">
+    <button class="gold" id="loginBtn">เข้าสู่ระบบ</button>
+    <div class="err" id="lerr"></div>
+  </form>
+</div>
+
+<!-- หน้าแก้ไข -->
+<div id="app">
+  <div class="bar">
+    <h1>⚙️ ระบบจัดการเว็บไซต์</h1><span class="who" id="who"></span>
+    <span class="status" id="status">บันทึกแล้ว</span>
+    <button onclick="preview()">👁 ดูตัวอย่าง</button>
+    <button onclick="download()" title="สำรองข้อมูลเป็นไฟล์">⬇ สำรองข้อมูล</button>
+    <button onclick="importFile()" title="นำเข้าจากไฟล์สำรอง">📂 นำเข้า</button>
+    <button class="gold" id="saveBtn" onclick="saveAll()">💾 บันทึกขึ้นเว็บ</button>
+    <button id="logoutBtn" onclick="logout()">ออก</button>
+  </div>
+  <div class="wrap">
+    <div class="side" id="side"></div>
+    <div>
+      <div class="hint" id="hint"></div>
+      <div id="form"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".js,.json" hidden>
+<input type="file" id="upIn" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script>
+const CFG = window.SUPABASE_CONFIG || {};
+const TABLE = CFG.table || "site_content", ROW = CFG.rowId || "main", BUCKET = CFG.bucket || "media";
+const sb = (CFG.url && CFG.anonKey && window.supabase) ? window.supabase.createClient(CFG.url, CFG.anonKey) : null;
+const KEY = "dlf_site_draft";
+let D = null, dirty = false, userEmail = "";
+
+/* ---------- ป้ายชื่อภาษาไทย ---------- */
+const L = {
+  site:"ข้อมูลเว็บไซต์", menu:"เมนูหลัก", slides:"สไลด์ภาพหน้าแรก", quickLinks:"เมนูลัด (การ์ดใต้สไลด์)",
+  executives:"ผู้บริหาร", stats:"สถิติผู้เข้าชม", channels:"ช่องรายการ DLTV", infographics:"อินโฟกราฟิก",
+  news:"ข่าวสารและประกาศ", announcements:"ประกาศ / คำสั่ง", publications:"เอกสารเผยแพร่", events:"ปฏิทินกิจกรรม",
+  links:"ลิงก์ที่เกี่ยวข้อง", about:"เกี่ยวกับเรา", mission:"แถบพันธกิจ", footer:"ส่วนท้าย / ติดต่อ",
+  name:"ชื่อ", subName:"ชื่อบรรทัดที่ 2", nameEn:"ชื่อภาษาอังกฤษ", logo:"โลโก้", topBarText:"ข้อความแถบบนสุด",
+  oldSiteUrl:"ลิงก์เว็บเดิม", loginUrl:"ลิงก์เข้าสู่ระบบ", englishUrl:"ลิงก์ภาษาอังกฤษ",
+  label:"ข้อความเมนู", url:"ลิงก์ / ไฟล์แนบ", image:"รูปภาพ", photo:"รูปภาพ", title:"หัวข้อ", subtitle:"คำอธิบายรอง",
+  button1Text:"ปุ่มที่ 1 ข้อความ", button1Url:"ปุ่มที่ 1 ลิงก์", button2Text:"ปุ่มที่ 2 ข้อความ", button2Url:"ปุ่มที่ 2 ลิงก์",
+  icon:"ไอคอน (อีโมจิ)", desc:"คำอธิบาย", position:"ตำแหน่ง", items:"รายการ",
+  autoCount:"นับผู้เข้าชมจริงอัตโนมัติ (จาก Supabase)", baseTotal:"ยอดสะสมจากเว็บเดิม (บวกเพิ่มในช่อง 'ทั้งหมด')",
+  today:"วันนี้ (ใช้เมื่อไม่นับอัตโนมัติ)", month:"เดือนนี้", year:"ปีนี้", total:"ทั้งหมด", reportUrl:"ลิงก์รายงาน",
+  caption:"คำบรรยาย", moreUrl:"ลิงก์ \"ดูทั้งหมด\"", date:"วันที่", category:"หมวดหมู่",
+  summary:"สรุปข่าวสั้น", content:"เนื้อหาข่าวฉบับเต็ม", files:"จำนวนไฟล์แนบ", group:"หน่วยงาน/กลุ่ม", phone:"โทรศัพท์",
+  text:"ข้อความ", tagline:"ข้อความเพิ่มเติม", address:"ที่อยู่", email:"อีเมล",
+  facebook:"Facebook", youtube:"YouTube", instagram:"Instagram", tiktok:"TikTok", line:"LINE", copyright:"ข้อความลิขสิทธิ์"
+};
+const LONG = ["content","text","address","summary","subtitle"];
+const IMG  = ["image","photo","logo"];
+const FILE = ["url"];               // ช่องลิงก์ที่อัปโหลดไฟล์แนบได้ (PDF, Word ฯลฯ)
+const lab = k => L[k] || k;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $ = id => document.getElementById(id);
+
+function toast(t, bad){ const e=$("toast"); e.textContent=t; e.className="toast"+(bad?" bad":""); e.style.display="block"; clearTimeout(e._t); e._t=setTimeout(()=>e.style.display="none", bad?6000:2500); }
+function markDirty(v=true){ dirty=v; const s=$("status"); s.textContent = v ? "มีการแก้ไขที่ยังไม่บันทึก" : "บันทึกแล้ว"; s.className = "status"+(v?" dirty":""); }
+function saveDraft(){ localStorage.setItem(KEY, JSON.stringify(D)); markDirty(); }
+window.addEventListener("beforeunload", e => { if (dirty && sb) { e.preventDefault(); e.returnValue = ""; } });
+
+/* ---------- เข้าสู่ระบบ ---------- */
+async function doLogin(e){
+  e.preventDefault(); $("lerr").textContent = ""; $("loginBtn").disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
+  $("loginBtn").disabled = false;
+  if (error) { $("lerr").textContent = "เข้าสู่ระบบไม่สำเร็จ: " + error.message; return; }
+  afterLogin();
+}
+async function afterLogin(){
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+  const { data: ok } = await sb.rpc("is_admin");
+  if (!ok) { $("lerr").textContent = "บัญชีนี้ไม่มีสิทธิ์ผู้ดูแล (ต้องเพิ่มอีเมลในตาราง admins)"; await sb.auth.signOut(); return; }
+  userEmail = user.email;
+  const { data, error } = await sb.from(TABLE).select("data,updated_at,updated_by").eq("id", ROW).maybeSingle();
+  if (error) { toast("โหลดข้อมูลไม่สำเร็จ: " + error.message, true); }
+  if (data && data.data) {
+    D = data.data;
+    $("hint").innerHTML = `ข้อมูลล่าสุดบันทึกเมื่อ <b>${new Date(data.updated_at).toLocaleString("th-TH")}</b> โดย ${esc(data.updated_by||"-")}<br>
+      แก้ไขข้อมูล → กดปุ่ม <b>อัปโหลด</b> ข้างช่องรูปภาพ/ไฟล์เพื่อส่งไฟล์ขึ้น Supabase → กด <b>ดูตัวอย่าง</b> → กด <b>บันทึกขึ้นเว็บ</b>`;
+    markDirty(false);
+  } else {
+    D = JSON.parse(JSON.stringify(window.SITE_DATA));
+    $("hint").innerHTML = `ยังไม่มีข้อมูลในฐานข้อมูล ระบบโหลดข้อมูลตั้งต้นจาก <code>data.js</code> ให้แล้ว — กด <b>บันทึกขึ้นเว็บ</b> หนึ่งครั้งเพื่อสร้างข้อมูลชุดแรก`;
+    markDirty(true);
+  }
+  localStorage.setItem(KEY, JSON.stringify(D));
+  showApp();
+}
+async function logout(){
+  if (dirty && !confirm("ยังมีการแก้ไขที่ไม่ได้บันทึก ต้องการออกจากระบบหรือไม่?")) return;
+  dirty = false; await sb.auth.signOut(); location.reload();
+}
+function showApp(){
+  $("login").style.display = "none"; $("app").style.display = "block";
+  $("who").textContent = userEmail ? "👤 " + userEmail : "";
+  render();
+}
+
+/* ---------- บันทึกขึ้น Supabase ---------- */
+async function saveAll(){
+  if (!sb) { download(); return; }
+  $("saveBtn").disabled = true; $("saveBtn").textContent = "กำลังบันทึก...";
+  const { error } = await sb.from(TABLE).upsert({ id: ROW, data: D, updated_at: new Date().toISOString(), updated_by: userEmail });
+  $("saveBtn").disabled = false; $("saveBtn").textContent = "💾 บันทึกขึ้นเว็บ";
+  if (error) { toast("บันทึกไม่สำเร็จ: " + error.message, true); return; }
+  markDirty(false); toast("บันทึกเรียบร้อย หน้าเว็บอัปเดตแล้ว");
+}
+
+/* ---------- อัปโหลดรูปภาพ / ไฟล์ ขึ้น Supabase Storage ---------- */
+let upPath = null, upIsImg = false;
+function pickUpload(path, isImg){
+  if (!sb) { toast("ต้องตั้งค่า Supabase ใน config.js ก่อนจึงจะอัปโหลดได้", true); return; }
+  upPath = path; upIsImg = isImg;
+  const inp = $("upIn"); inp.value = ""; inp.accept = isImg ? "image/*" : ""; inp.click();
+}
+$("upIn").onchange = async e => {
+  let file = e.target.files[0]; if (!file || !upPath) return;
+  if (file.size > 50 * 1024 * 1024) { toast("ไฟล์ใหญ่เกิน 50MB", true); return; }
+  toast("กำลังอัปโหลด " + file.name + " ...");
+  try {
+    if (upIsImg) file = await shrinkImage(file);
+    const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g,"");
+    const folder = String(upPath[0]);
+    const key = `${folder}/${new Date().toISOString().slice(0,10)}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const { error } = await sb.storage.from(BUCKET).upload(key, file, { contentType: file.type || undefined, cacheControl: "31536000" });
+    if (error) throw error;
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(key);
+    set(upPath, data.publicUrl); render();
+    toast("อัปโหลดสำเร็จ — อย่าลืมกด บันทึกขึ้นเว็บ");
+  } catch(err) { toast("อัปโหลดไม่สำเร็จ: " + (err.message || err), true); }
+};
+/* ย่อรูปใหญ่ให้กว้างไม่เกิน 1920px เพื่อให้เว็บโหลดเร็ว (ไม่ย่อ GIF/SVG/PNG โปร่งใสเล็ก) */
+function shrinkImage(file){
+  return new Promise(res => {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < 400 * 1024) return res(file);
+    const im = new Image(); im.onload = () => {
+      const max = 1920, sc = Math.min(1, max / Math.max(im.width, im.height));
+      if (sc === 1 && file.size < 1.5 * 1024 * 1024) return res(file);
+      const c = document.createElement("canvas"); c.width = Math.round(im.width*sc); c.height = Math.round(im.height*sc);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      const type = file.type === "image/png" ? "image/png" : "image/jpeg";
+      c.toBlob(b => res(b ? new File([b], file.name.replace(/\.\w+$/, type==="image/png"?".png":".jpg"), { type }) : file), type, .85);
+    };
+    im.onerror = () => res(file); im.src = URL.createObjectURL(file);
+  });
+}
+
+/* ---------- ฟอร์มแก้ไข ---------- */
+const get = p => p.reduce((o,k)=>o[k], D);
+function set(p, v){
+  const o = get(p.slice(0,-1)), k = p[p.length-1];
+  o[k] = typeof o[k] === "number" ? Number(v) : v; saveDraft();
+}
+function fieldHTML(path, k, v){
+  const pj = esc(JSON.stringify(path));
+  if (typeof v === "boolean") return `<div class="field" style="grid-column:1/-1"><label class="check"><input type="checkbox" ${v?"checked":""} onchange='set(${pj},this.checked)'> ${lab(k)}</label></div>`;
+  if (typeof v === "number") return `<div class="field"><label>${lab(k)}</label><input type="number" value="${v}" oninput='set(${pj},this.value)'></div>`;
+  if (LONG.includes(k)) return `<div class="field" style="grid-column:1/-1"><label>${lab(k)}</label><textarea oninput='set(${pj},this.value)'>${esc(v)}</textarea></div>`;
+  const isImg = IMG.includes(k), isFile = FILE.includes(k);
+  const btn = (isImg || isFile) ? `<button class="up" type="button" onclick='pickUpload(${pj},${isImg})'>⬆ อัปโหลด${isImg?"รูป":"ไฟล์"}</button>` : "";
+  const extra = isImg ? (v ? `<img class="thumb" src="${esc(v)}" onerror="this.style.display='none'">` : "")
+              : (isFile && /^https?:/.test(v||"") ? `<a class="flink" href="${esc(v)}" target="_blank">เปิดไฟล์/ลิงก์ ↗</a>` : "");
+  return `<div class="field"><label>${lab(k)}</label><div class="inrow"><input type="${k==="date"?"date":"text"}" value="${esc(v)}"
+    placeholder="${isImg?"กดอัปโหลดรูป หรือวาง URL":isFile?"วางลิงก์ หรือกดอัปโหลดไฟล์":""}" oninput='set(${pj},this.value)'>${btn}</div>${extra}</div>`;
+}
+function objHTML(path, obj){
+  let flat = "", nested = "";
+  for (const [k,v] of Object.entries(obj)) {
+    if (Array.isArray(v)) nested += `<div class="sub">${lab(k)}</div>` + arrHTML([...path,k], v);
+    else if (v && typeof v === "object") nested += `<div class="sub">${lab(k)}</div>` + objHTML([...path,k], v);
+    else flat += fieldHTML([...path,k], k, v);
+  }
+  return (flat ? `<div class="grid2">${flat}</div>` : "") + nested;
+}
+function arrHTML(path, arr){
+  const pj = esc(JSON.stringify(path));
+  return `<button class="add" onclick='add(${pj})'>＋ เพิ่มรายการใหม่</button><div style="height:10px"></div>` +
+    arr.map((it,i) => `<div class="item"><div class="item-h"><b>#${i+1} ${esc(it.title||it.name||it.label||it.caption||"")}</b>
+      <button title="เลื่อนขึ้น" onclick='move(${pj},${i},-1)'>▲</button><button title="เลื่อนลง" onclick='move(${pj},${i},1)'>▼</button>
+      <button title="คัดลอก" onclick='dup(${pj},${i})'>⧉</button><button class="del" onclick='del(${pj},${i})'>ลบ</button></div>
+      ${objHTML([...path,i], it)}</div>`).join("");
+}
+function render(){
+  const y = scrollY;
+  $("side").innerHTML = Object.keys(D).map(k=>`<a href="#s_${k}">${lab(k)}</a>`).join("");
+  $("form").innerHTML = Object.entries(D).map(([k,v]) =>
+    `<div class="panel" id="s_${k}"><h2>${lab(k)}</h2>${Array.isArray(v)?arrHTML([k],v):objHTML([k],v)}</div>`).join("");
+  scrollTo(0,y);
+}
+function blank(o){ if(Array.isArray(o)) return []; if(o && typeof o==="object"){ const r={}; for(const k in o) r[k]=blank(o[k]); return r;} return typeof o==="number"?0:typeof o==="boolean"?false:""; }
+function add(p){ const a=get(p); const n = a.length ? blank(a[0]) : {title:"",url:""}; if("date" in n) n.date=new Date().toISOString().slice(0,10); a.unshift(n); saveDraft(); render(); toast("เพิ่มรายการใหม่ไว้บนสุดแล้ว"); }
+function del(p,i){ if(!confirm("ยืนยันการลบรายการนี้?")) return; get(p).splice(i,1); saveDraft(); render(); }
+function dup(p,i){ const a=get(p); a.splice(i+1,0,JSON.parse(JSON.stringify(a[i]))); saveDraft(); render(); }
+function move(p,i,d){ const a=get(p), j=i+d; if(j<0||j>=a.length) return; [a[i],a[j]]=[a[j],a[i]]; saveDraft(); render(); }
+
+/* ---------- ดูตัวอย่าง / สำรอง / นำเข้า ---------- */
+function preview(){ localStorage.setItem(KEY, JSON.stringify(D)); window.open("index.html?preview=1","_blank"); }
+function download(){
+  const txt = "/* สำรองข้อมูลเว็บไซต์ " + new Date().toLocaleString("th-TH") + " */\nwindow.SITE_DATA = " + JSON.stringify(D, null, 2) + ";\n";
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt],{type:"text/javascript"})); a.download = "data.js"; a.click();
+  toast(sb ? "ดาวน์โหลดไฟล์สำรองแล้ว" : "ดาวน์โหลดแล้ว — นำไปวางทับ data.js บนเซิร์ฟเวอร์");
+}
+function importFile(){ $("fileIn").click(); }
+$("fileIn").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  f.text().then(t => {
+    try { D = JSON.parse(t.slice(t.indexOf("{"), t.lastIndexOf("}")+1)); saveDraft(); render(); toast("นำเข้าเรียบร้อย — กดบันทึกขึ้นเว็บเพื่อใช้งาน"); }
+    catch(err){ alert("อ่านไฟล์ไม่สำเร็จ: ต้องเป็นไฟล์สำรองที่ดาวน์โหลดจากหน้านี้"); }
+  });
+};
+
+/* ---------- เริ่มต้น ---------- */
+(async () => {
+  if (sb) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) afterLogin();
+  } else {
+    // โหมดออฟไลน์: ยังไม่ตั้งค่า Supabase
+    try { D = JSON.parse(localStorage.getItem(KEY)) || null; } catch(e) {}
+    if (!D) D = JSON.parse(JSON.stringify(window.SITE_DATA));
+    $("hint").className = "hint off";
+    $("hint").innerHTML = `<b>ยังไม่ได้เชื่อมต่อ Supabase</b> — ใส่ค่า url และ anonKey ในไฟล์ <code>config.js</code> เพื่อเปิดระบบเข้าสู่ระบบ อัปโหลดไฟล์ และบันทึกขึ้นเว็บ<br>
+      ระหว่างนี้ใช้งานแบบออฟไลน์ได้: แก้ไข → กด <b>บันทึกขึ้นเว็บ</b> จะได้ไฟล์ data.js ไปวางทับบนเซิร์ฟเวอร์`;
+    $("logoutBtn").style.display = "none";
+    showApp(); markDirty(false);
+  }
+})();
+</script>
+</body>
+</html>

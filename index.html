@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>มูลนิธิการศึกษาทางไกลผ่านดาวเทียม ในพระบรมราชูปถัมภ์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a2a66; --navy-2:#123d8f; --blue:#1d5fd1; --gold:#c9a227; --gold-2:#e7c65a;
+  --ink:#1b2333; --muted:#5d6779; --line:#e3e8f1; --bg:#f5f7fb; --white:#fff;
+  --radius:14px; --shadow:0 6px 24px rgba(10,42,102,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Sarabun",sans-serif;color:var(--ink);background:var(--white);line-height:1.65;font-size:16px}
+h1,h2,h3,.brand{font-family:"Prompt",sans-serif}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{width:min(1200px,92%);margin:auto}
+
+/* top bar */
+.topbar{background:var(--navy);color:#cfd9ee;font-size:14px}
+.topbar .container{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;flex-wrap:wrap}
+.topbar a:hover{color:var(--gold-2)}
+.topbar .right{display:flex;gap:14px;align-items:center}
+.lang a{padding:2px 6px;border-radius:4px}.lang a.on{background:var(--gold);color:var(--navy);font-weight:700}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);backdrop-filter:blur(6px);border-bottom:3px solid var(--gold);box-shadow:0 2px 12px rgba(0,0,0,.05)}
+header .container{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.logo{display:flex;align-items:center;gap:12px}
+.logo .mark{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--gold-2),var(--gold) 55%,#9b7b14);display:grid;place-items:center;color:var(--navy);font:700 15px "Prompt";flex:none;overflow:hidden}
+.logo .mark img{width:100%;height:100%;object-fit:contain;background:#fff}
+.brand{color:var(--navy);font-weight:700;font-size:17px;line-height:1.25}
+.brand small{display:block;font-weight:500;font-size:14px;color:var(--gold)}
+nav ul{display:flex;list-style:none;gap:2px}
+nav a{display:block;padding:8px 10px;white-space:nowrap;border-radius:8px;font-weight:600;color:var(--navy);font-size:15px}
+nav a:hover{background:var(--bg);color:var(--blue)}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;font-weight:700;font-size:15px;border:2px solid transparent;transition:.2s;cursor:pointer}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-2)}
+.btn-outline{border-color:#fff;color:#fff}.btn-outline:hover{background:#fff;color:var(--navy)}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2)}
+.burger{display:none;background:none;border:0;font-size:28px;color:var(--navy);cursor:pointer}
+
+/* hero */
+.hero{position:relative;height:min(78vh,600px);overflow:hidden;background:var(--navy)}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .9s;background-size:cover;background-position:center}
+.slide.on{opacity:1}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,24,64,.88) 0%,rgba(6,24,64,.55) 55%,rgba(6,24,64,.15))}
+.slide .ph{position:absolute;inset:0;background:
+  radial-gradient(circle at 80% 30%,rgba(231,198,90,.35),transparent 40%),
+  radial-gradient(circle at 70% 80%,rgba(29,95,209,.6),transparent 50%),
+  linear-gradient(135deg,#0a2a66,#123d8f)}
+.slide .ph::before{content:"";position:absolute;right:8%;top:18%;width:340px;height:340px;border-radius:50%;border:2px dashed rgba(255,255,255,.18)}
+.slide .ph::after{content:"🛰️";position:absolute;right:14%;top:28%;font-size:120px;opacity:.5}
+.slide .txt{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;color:#fff;max-width:640px}
+.slide .tag{color:var(--gold-2);font-weight:700;letter-spacing:.5px;margin-bottom:8px}
+.slide h1{font-size:clamp(28px,4.4vw,50px);line-height:1.2;margin-bottom:14px}
+.slide p{font-size:clamp(16px,1.6vw,20px);opacity:.92;margin-bottom:26px}
+.slide .btns{display:flex;gap:12px;flex-wrap:wrap}
+.dots{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:5}
+.dots button{width:12px;height:12px;border-radius:999px;border:0;background:rgba(255,255,255,.45);cursor:pointer;transition:.3s}
+.dots button.on{width:34px;background:var(--gold)}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;background:rgba(255,255,255,.15);border:0;color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
+.arrow:hover{background:var(--gold);color:var(--navy)}.arrow.l{left:18px}.arrow.r{right:18px}
+
+/* quick links */
+.quick{margin-top:-60px;position:relative;z-index:10}
+.quick .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.qcard{background:#fff;border-radius:var(--radius);padding:22px 16px;box-shadow:var(--shadow);text-align:center;border-bottom:4px solid var(--gold);transition:.25s}
+.qcard:hover{transform:translateY(-5px);border-color:var(--blue)}
+.qcard .ic{font-size:34px;margin-bottom:6px}
+.qcard h3{font-size:17px;color:var(--navy)}
+.qcard p{font-size:14px;color:var(--muted)}
+
+/* sections */
+section{padding:64px 0}
+section.alt{background:var(--bg)}
+.head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.head h2{font-size:clamp(24px,3vw,32px);color:var(--navy);position:relative;padding-left:16px}
+.head h2::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:6px;border-radius:4px;background:var(--gold)}
+.head p{color:var(--muted);padding-left:16px}
+.more{color:var(--blue);font-weight:700}.more:hover{text-decoration:underline}
+
+/* executives */
+.exec{display:flex;flex-wrap:wrap;justify-content:center;gap:22px}
+.person{width:260px;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);text-align:center}
+.person .pic{aspect-ratio:3/3.4;background:linear-gradient(160deg,#dfe7f6,#b9c9ea);display:grid;place-items:center;font-size:72px;color:#fff;overflow:hidden}
+.person .pic img{width:100%;height:100%;object-fit:cover}
+.person .pinfo{padding:16px;border-top:4px solid var(--gold)}
+.person h3{font-size:17px;color:var(--navy)}.person p{color:var(--muted);font-size:14px}
+.person:first-child{margin-inline:calc((100% - 260px)/2)}
+
+/* stats */
+.stats{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;padding:44px 0}
+.stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:20px;text-align:center}
+.stat b{display:block;font:700 30px "Prompt";color:var(--gold-2)}
+.stats .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.stats h2{font-size:24px}.stats a{color:var(--gold-2);font-weight:700}
+
+/* channels */
+.ch{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.chcard{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;transition:.2s}
+.chcard:hover{border-color:var(--gold);box-shadow:var(--shadow)}
+.chcard .no{width:58px;height:58px;border-radius:12px;background:var(--navy);color:var(--gold-2);display:grid;place-items:center;font:700 14px "Prompt";flex:none;text-align:center;line-height:1.1}
+.chcard h3{font-size:16px;color:var(--navy)}.chcard p{font-size:14px;color:var(--muted)}
+
+/* infographics */
+.info{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.infocard{border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:var(--shadow);cursor:zoom-in}
+.infocard .img{aspect-ratio:3/4;background:linear-gradient(160deg,var(--navy-2),var(--blue));display:grid;place-items:center;color:#fff;font-size:48px}
+.infocard .img img{width:100%;height:100%;object-fit:cover}
+.infocard p{padding:12px 14px;font-weight:600;color:var(--navy)}
+
+/* news */
+.news{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+.ncard{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;cursor:pointer;transition:.25s}
+.ncard:hover{transform:translateY(-4px)}
+.ncard .img{aspect-ratio:16/9;background:linear-gradient(135deg,#1d5fd1,#0a2a66);display:grid;place-items:center;color:#fff;font-size:44px;overflow:hidden}
+.ncard .img img{width:100%;height:100%;object-fit:cover}
+.ncard .b{padding:16px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.meta{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.cat{background:#fff5d6;color:#8a6a00;padding:2px 10px;border-radius:999px;font-weight:700}
+.ncard h3{font-size:18px;color:var(--navy);line-height:1.4}
+.ncard p{color:var(--muted);font-size:15px}
+.ncard .rm{margin-top:auto;color:var(--blue);font-weight:700;font-size:14px}
+.news .side{display:grid;gap:16px}
+.news .side .ncard{flex-direction:row}
+.news .side .ncard .img{aspect-ratio:auto;width:38%;flex:none;font-size:30px}
+.news .side .ncard h3{font-size:16px}.news .side .ncard p{display:none}
+
+/* docs */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;border-top:5px solid var(--navy)}
+.box.gold{border-top-color:var(--gold)}
+.box .head{margin-bottom:12px}.box .head h2{font-size:22px}
+.doc{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed var(--line)}
+.doc:last-child{border:0}
+.doc .ic{width:42px;height:42px;border-radius:10px;background:#eaf0fb;display:grid;place-items:center;font-size:20px;flex:none}
+.doc h3{font-size:16px;font-weight:600;color:var(--ink);font-family:"Sarabun"}
+.doc:hover h3{color:var(--blue)}
+.doc .meta span+span::before{content:"•";margin-right:10px}
+
+/* events */
+.events{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.ev{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;overflow:hidden}
+.ev .d{background:var(--navy);color:#fff;padding:16px 12px;text-align:center;min-width:76px;display:flex;flex-direction:column;justify-content:center}
+.ev .d b{font:700 30px "Prompt";color:var(--gold-2);line-height:1}
+.ev .d span{font-size:13px}
+.ev .b{padding:14px}
+.ev h3{font-size:16px;color:var(--navy);line-height:1.4;margin-bottom:6px}
+.ev .g{display:inline-block;font-size:12px;background:#eaf0fb;color:var(--navy-2);padding:2px 8px;border-radius:999px;font-weight:700}
+.ev .p{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* about */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.about .pic{border-radius:var(--radius);aspect-ratio:4/3;background:linear-gradient(135deg,var(--gold-2),var(--gold));display:grid;place-items:center;font-size:90px;overflow:hidden;box-shadow:var(--shadow)}
+.about .pic img{width:100%;height:100%;object-fit:cover}
+.about p{color:var(--muted);margin-bottom:12px;font-size:17px}
+
+/* links */
+.links{display:flex;flex-wrap:wrap;gap:12px}
+.links a{background:#fff;border:1px solid var(--line);padding:12px 20px;border-radius:999px;font-weight:600;color:var(--navy)}
+.links a:hover{border-color:var(--gold);background:#fffbea}
+
+/* mission */
+.mission{background:linear-gradient(120deg,#071d4a,var(--navy-2));color:#fff;text-align:center;padding:72px 0;position:relative;overflow:hidden}
+.mission::before{content:"";position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(231,198,90,.25);left:50%;top:50%;transform:translate(-50%,-50%)}
+.mission h2{font-size:clamp(26px,3.4vw,40px);position:relative}
+.mission .en{color:var(--gold-2);font-weight:600;font-size:18px;margin:6px 0 14px;position:relative}
+.mission p{opacity:.85;position:relative}
+
+/* footer */
+footer{background:#06163a;color:#b8c4dd;padding:50px 0 20px;font-size:15px}
+footer .grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:30px}
+footer h4{color:#fff;font-family:"Prompt";margin-bottom:12px;font-size:17px}
+footer .brand{color:#fff}footer .brand small{color:var(--gold-2)}
+footer ul{list-style:none}footer li{margin-bottom:6px}footer a:hover{color:var(--gold-2)}
+.social{display:flex;gap:10px;margin-top:14px}
+.social a{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff}
+.social a:hover{background:var(--gold);color:var(--navy)}
+.copy{border-top:1px solid rgba(255,255,255,.1);margin-top:34px;padding-top:16px;text-align:center;font-size:14px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(5,15,40,.7);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal .card{background:#fff;border-radius:var(--radius);max-width:820px;width:100%;max-height:90vh;overflow:auto;position:relative}
+.modal .x{position:absolute;right:12px;top:10px;background:#fff;border:0;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer;box-shadow:var(--shadow);z-index:2}
+.modal .content{padding:26px}
+.modal h2{color:var(--navy);font-size:24px;margin:8px 0 14px}
+.modal .content p{margin-bottom:12px}
+.modal img.full{width:100%}
+.preview-flag{position:fixed;bottom:14px;left:14px;background:#e53935;color:#fff;padding:8px 14px;border-radius:999px;font-weight:700;z-index:200;font-size:14px}
+
+/* responsive */
+@media (max-width:1240px){
+  nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;box-shadow:var(--shadow)}
+  nav.open{display:block}nav ul{flex-direction:column;padding:10px 4%}
+  .burger{display:block}.login{display:none}
+  .quick .grid{grid-template-columns:repeat(3,1fr)}
+  .ch,.events,.info{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){
+  .quick .grid{grid-template-columns:repeat(2,1fr)}
+  .stats .grid{grid-template-columns:repeat(2,1fr)}
+  .person{width:calc(50% - 11px)}.person:first-child{margin-inline:calc((100% - (50% - 11px))/2)}
+  .news,.two,.about,footer .grid{grid-template-columns:1fr}
+  .ch,.events{grid-template-columns:1fr}
+  .arrow{display:none}.brand{font-size:15px}.topbar .left{display:none}
+}
+</style>
+</head>
+<body id="top">
+
+<div class="topbar"><div class="container">
+  <div class="left" id="topText"></div>
+  <div class="right">
+    <a id="oldSite" href="#">เข้าสู่เว็บเดิม</a>
+    <span class="lang"><a class="on" href="#">ไทย</a> <a id="enLink" href="#">EN</a></span>
+  </div>
+</div></div>
+
+<header><div class="container">
+  <a class="logo" href="#top"><div class="mark" id="logoMark">DLF</div><div class="brand" id="brand"></div></a>
+  <nav id="nav"><ul id="menu"></ul></nav>
+  <a class="btn btn-navy login" id="loginBtn" href="#">🔐 เข้าสู่ระบบ</a>
+  <button class="burger" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="เมนู">☰</button>
+</div></header>
+
+<div class="hero" id="hero"></div>
+
+<div class="quick" id="services"><div class="container"><div class="grid" id="quick"></div></div></div>
+
+<section id="executives"><div class="container">
+  <div class="head"><div><h2 id="execTitle"></h2></div></div>
+  <div class="exec" id="exec"></div>
+</div></section>
+
+<div class="stats"><div class="container">
+  <div class="row"><h2 id="statTitle"></h2><a id="statLink" href="#">ดูรายงานโดยละเอียด →</a></div>
+  <div class="grid" id="stats"></div>
+</div></div>
+
+<section id="channels" class="alt"><div class="container">
+  <div class="head"><div><h2 id="chTitle"></h2><p id="chSub"></p></div></div>
+  <div class="ch" id="ch"></div>
+</div></section>
+
+<section id="infographics"><div class="container">
+  <div class="head"><div><h2 id="infoTitle"></h2></div></div>
+  <div class="info" id="info"></div>
+</div></section>
+
+<section id="news" class="alt"><div class="container">
+  <div class="head"><div><h2 id="newsTitle"></h2></div><a class="more" id="newsMore" href="#">ดูทั้งหมด →</a></div>
+  <div class="news"><div id="newsMain"></div><div class="side" id="newsSide"></div></div>
+</div></section>
+
+<section><div class="container two">
+  <div class="box" id="announcements"><div class="head"><h2 id="annTitle"></h2><a class="more" id="annMore" href="#">ทั้งหมด →</a></div><div id="ann"></div></div>
+  <div class="box gold" id="publications"><div class="head"><h2 id="pubTitle"></h2><a class="more" id="pubMore" href="#">ทั้งหมด →</a></div><div id="pub"></div></div>
+</div></section>
+
+<section id="calendar" class="alt"><div class="container">
+  <div class="head"><div><h2 id="evTitle"></h2></div></div>
+  <div class="events" id="ev"></div>
+</div></section>
+
+<section id="about"><div class="container about">
+  <div class="pic" id="aboutPic">🏫</div>
+  <div><div class="head"><div><h2 id="aboutTitle"></h2></div></div><div id="aboutText"></div></div>
+</div></section>
+
+<section id="links" class="alt" style="padding-top:40px;padding-bottom:40px"><div class="container">
+  <div class="head"><div><h2 id="linkTitle"></h2></div></div>
+  <div class="links" id="linkList"></div>
+</div></section>
+
+<div class="mission"><div class="container">
+  <h2 id="misT"></h2><div class="en" id="misS"></div><p id="misG"></p>
+</div></div>
+
+<footer id="contact"><div class="container">
+  <div class="grid">
+    <div>
+      <div class="logo" style="margin-bottom:14px"><div class="mark" id="logoMark2">DLF</div><div class="brand" id="brand2"></div></div>
+      <div id="addr"></div>
+      <div class="social" id="social"></div>
+    </div>
+    <div><h4>เมนู</h4><ul id="fmenu"></ul></div>
+    <div><h4>ติดต่อเรา</h4><ul id="fcontact"></ul></div>
+  </div>
+  <div class="copy" id="copy"></div>
+</div></footer>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="card"><button class="x" onclick="closeModal()">×</button><div id="modalBody"></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script>
+/* ---------- โหลดข้อมูล: Supabase → (สำรอง) data.js ---------- */
+const CFG = window.SUPABASE_CONFIG || {};
+const sb = (CFG.url && CFG.anonKey && window.supabase) ? window.supabase.createClient(CFG.url, CFG.anonKey) : null;
+const isPreview = new URLSearchParams(location.search).has("preview");
+let D;
+async function loadData(){
+  if (isPreview) { try { const s = localStorage.getItem("dlf_site_draft"); if (s) return JSON.parse(s); } catch(e) {} }
+  if (sb) {
+    try {
+      const { data, error } = await sb.from(CFG.table || "site_content").select("data").eq("id", CFG.rowId || "main").maybeSingle();
+      if (!error && data && data.data) return data.data;
+      if (error) console.warn("Supabase:", error.message);
+    } catch(e) { console.warn("Supabase:", e); }
+  }
+  return window.SITE_DATA;
+}
+
+/* ---------- ตัวช่วย ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = s => String(s||"").split(/\n\s*\n/).map(p => `<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+const TH_M = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+function thDate(s){ const d=new Date(s); if(isNaN(d)) return esc(s); return `${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`; }
+const img = (src, fallback) => src ? `<img src="${esc(src)}" alt="" loading="lazy">` : fallback;
+const ext = u => /^https?:/.test(u||"") ? ' target="_blank" rel="noopener"' : "";
+const num = n => Number(n||0).toLocaleString("th-TH");
+
+function renderAll(){
+/* ---------- ส่วนหัว ---------- */
+const S = D.site;
+document.title = `${S.name} ${S.subName}`;
+$("topText").textContent = S.topBarText;
+$("oldSite").href = S.oldSiteUrl || "#"; $("enLink").href = S.englishUrl || "#"; $("loginBtn").href = S.loginUrl || "#";
+const brandHTML = `${esc(S.name)}<small>${esc(S.subName)}</small>`;
+$("brand").innerHTML = brandHTML; $("brand2").innerHTML = brandHTML;
+if (S.logo) { $("logoMark").innerHTML = $("logoMark2").innerHTML = `<img src="${esc(S.logo)}" alt="logo">`; }
+$("menu").innerHTML = D.menu.map(m => `<li><a href="${esc(m.url)}"${ext(m.url)}>${esc(m.label)}</a></li>`).join("");
+$("menu").onclick = () => $("nav").classList.remove("open");
+
+/* ---------- สไลด์ ---------- */
+const hero = $("hero");
+hero.innerHTML = D.slides.map((s,i) => `
+  <div class="slide${i?"":" on"}" ${s.image?`style="background-image:url('${esc(s.image)}')"`:""}>
+    ${s.image?"":'<div class="ph"></div>'}
+    <div class="container txt">
+      <div class="tag">${esc(S.name)}</div>
+      <h1>${esc(s.title)}</h1><p>${esc(s.subtitle)}</p>
+      <div class="btns">
+        ${s.button1Text?`<a class="btn btn-gold" href="${esc(s.button1Url)}">${esc(s.button1Text)}</a>`:""}
+        ${s.button2Text?`<a class="btn btn-outline" href="${esc(s.button2Url)}">${esc(s.button2Text)}</a>`:""}
+      </div>
+    </div>
+  </div>`).join("") +
+  (D.slides.length>1 ? `<button class="arrow l" onclick="go(cur-1)">‹</button><button class="arrow r" onclick="go(cur+1)">›</button>
+  <div class="dots">${D.slides.map((_,i)=>`<button class="${i?"":"on"}" onclick="go(${i})" aria-label="สไลด์ ${i+1}"></button>`).join("")}</div>` : "");
+let cur = 0, timer;
+window.go = function(n){
+  const sl = hero.querySelectorAll(".slide"), dt = hero.querySelectorAll(".dots button");
+  if(!sl.length) return;
+  sl[cur].classList.remove("on"); dt[cur]?.classList.remove("on");
+  cur = (n + sl.length) % sl.length;
+  sl[cur].classList.add("on"); dt[cur]?.classList.add("on");
+  clearInterval(timer); timer = setInterval(()=>go(cur+1), 6000);
+}
+if (D.slides.length>1) timer = setInterval(()=>go(cur+1), 6000);
+
+/* ---------- เมนูลัด ---------- */
+$("quick").innerHTML = D.quickLinks.map(q => `<a class="qcard" href="${esc(q.url)}"${ext(q.url)}><div class="ic">${esc(q.icon)}</div><h3>${esc(q.title)}</h3><p>${esc(q.desc)}</p></a>`).join("");
+
+/* ---------- ผู้บริหาร ---------- */
+$("execTitle").textContent = D.executives.title;
+$("exec").innerHTML = D.executives.items.map(p => `<div class="person"><div class="pic">${img(p.photo,"👤")}</div><div class="pinfo"><h3>${esc(p.name)}</h3><p>${esc(p.position)}</p></div></div>`).join("");
+
+/* ---------- สถิติ ---------- */
+const st = D.stats;
+$("statTitle").textContent = st.title; $("statLink").href = st.reportUrl || "#";
+$("stats").innerHTML = [["วันนี้",st.today],["เดือนนี้",st.month],["ปีนี้",st.year],["ทั้งหมด",st.total]]
+  .map(([l,v]) => `<div class="stat"><b>${num(v)}</b>${l}</div>`).join("");
+if (st.autoCount && sb && !isPreview) loadVisits(st);
+
+/* ---------- ช่อง DLTV ---------- */
+$("chTitle").textContent = D.channels.title; $("chSub").textContent = D.channels.subtitle;
+$("ch").innerHTML = D.channels.items.map(c => `<a class="chcard" href="${esc(c.url)}"${ext(c.url)}><div class="no">${esc(c.name)}</div><div><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p></div></a>`).join("");
+
+/* ---------- อินโฟกราฟิก ---------- */
+$("infoTitle").textContent = D.infographics.title;
+$("info").innerHTML = D.infographics.items.map((x,i) => `<div class="infocard" onclick="openInfo(${i})"><div class="img">${img(x.image,"📊")}</div><p>${esc(x.caption)}</p></div>`).join("");
+window.openInfo = function(i){ const x=D.infographics.items[i]; if(!x.image) return; openModal(`<img class="full" src="${esc(x.image)}" alt=""><div class="content"><h2>${esc(x.caption)}</h2></div>`); }
+
+/* ---------- ข่าว ---------- */
+$("newsTitle").textContent = D.news.title; $("newsMore").href = D.news.moreUrl || "#";
+const news = [...D.news.items].sort((a,b)=> String(b.date).localeCompare(String(a.date)));
+const ncard = (n,i) => `<div class="ncard" onclick="openNews(${i})"><div class="img">${img(n.image,"📰")}</div><div class="b">
+  <div class="meta">${n.category?`<span class="cat">${esc(n.category)}</span>`:""}<span>📅 ${thDate(n.date)}</span></div>
+  <h3>${esc(n.title)}</h3><p>${esc(n.summary)}</p><span class="rm">อ่านต่อ →</span></div></div>`;
+$("newsMain").innerHTML = news[0] ? ncard(news[0],0) : "";
+$("newsSide").innerHTML = news.slice(1,4).map((n,i)=>ncard(n,i+1)).join("");
+window.openNews = function(i){
+  const n = news[i];
+  if (n.url) { window.open(n.url, "_blank"); return; }
+  openModal(`${n.image?`<img class="full" src="${esc(n.image)}" alt="">`:""}<div class="content">
+    <div class="meta">${n.category?`<span class="cat">${esc(n.category)}</span>`:""}<span>📅 ${thDate(n.date)}</span></div>
+    <h2>${esc(n.title)}</h2>${paras(n.content || n.summary)}</div>`);
+}
+
+/* ---------- ประกาศ / เอกสาร ---------- */
+const docList = (arr, icon) => arr.map(d => `<a class="doc" href="${esc(d.url)}"${ext(d.url)}><div class="ic">${icon}</div><div><h3>${esc(d.title)}</h3>
+  <div class="meta"><span>📅 ${thDate(d.date)}</span>${d.files?`<span>📎 ${esc(d.files)} ไฟล์</span>`:""}</div></div></a>`).join("");
+$("annTitle").textContent = D.announcements.title; $("annMore").href = D.announcements.moreUrl || "#";
+$("ann").innerHTML = docList(D.announcements.items, "📄");
+$("pubTitle").textContent = D.publications.title; $("pubMore").href = D.publications.moreUrl || "#";
+$("pub").innerHTML = docList(D.publications.items, "📘");
+
+/* ---------- ปฏิทินกิจกรรม ---------- */
+$("evTitle").textContent = D.events.title;
+$("ev").innerHTML = [...D.events.items].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(e => {
+  const d = new Date(e.date), ok = !isNaN(d);
+  return `<div class="ev"><div class="d"><b>${ok?d.getDate():""}</b><span>${ok?TH_M[d.getMonth()]+" "+String(d.getFullYear()+543).slice(2):esc(e.date)}</span></div>
+  <div class="b"><h3>${esc(e.title)}</h3>${e.group?`<span class="g">${esc(e.group)}</span>`:""}${e.phone?`<div class="p">☎ ${esc(e.phone)}</div>`:""}</div></div>`;
+}).join("");
+
+/* ---------- เกี่ยวกับ / ลิงก์ / พันธกิจ ---------- */
+$("aboutTitle").textContent = D.about.title; $("aboutText").innerHTML = paras(D.about.text);
+if (D.about.image) $("aboutPic").innerHTML = img(D.about.image);
+$("linkTitle").textContent = D.links.title;
+$("linkList").innerHTML = D.links.items.map(l => `<a href="${esc(l.url)}"${ext(l.url)}>🔗 ${esc(l.name)}</a>`).join("");
+$("misT").textContent = D.mission.title; $("misS").textContent = D.mission.subtitle; $("misG").textContent = D.mission.tagline;
+
+/* ---------- ส่วนท้าย ---------- */
+const F = D.footer;
+$("addr").innerHTML = esc(F.address).replace(/\n/g,"<br>");
+$("social").innerHTML = [["facebook","f"],["youtube","▶"],["instagram","IG"],["tiktok","TT"],["line","LINE"]]
+  .filter(([k])=>F[k]).map(([k,t])=>`<a href="${esc(F[k])}" target="_blank" rel="noopener" title="${k}">${t}</a>`).join("");
+$("fmenu").innerHTML = D.menu.map(m => `<li><a href="${esc(m.url)}">${esc(m.label)}</a></li>`).join("");
+$("fcontact").innerHTML = (F.phone?`<li>☎ ${esc(F.phone)}</li>`:"") + (F.email?`<li>✉ <a href="mailto:${esc(F.email)}">${esc(F.email)}</a></li>`:"");
+$("copy").textContent = F.copyright;
+
+}
+
+/* ---------- สถิติผู้เข้าชมจริงจาก Supabase ---------- */
+async function loadVisits(st){
+  let counted = false; try { counted = sessionStorage.getItem("dlf_counted") === "1"; } catch(e) {}
+  const { data, error } = await sb.rpc("track_visit", { p_count: !counted });
+  if (error || !data) { console.warn("track_visit:", error && error.message); return; }
+  try { sessionStorage.setItem("dlf_counted","1"); } catch(e) {}
+  const v = [data.today, data.month, data.year, Number(data.total) + Number(st.baseTotal || 0)];
+  document.querySelectorAll("#stats .stat b").forEach((b,i) => b.textContent = num(v[i]));
+}
+
+/* ---------- หน้าต่างป๊อปอัป ---------- */
+function openModal(html){ $("modalBody").innerHTML = html; $("modal").classList.add("on"); document.body.style.overflow="hidden"; }
+function closeModal(){ $("modal").classList.remove("on"); document.body.style.overflow=""; }
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
+
+loadData().then(d => {
+  D = d; renderAll();
+  if (isPreview) document.body.insertAdjacentHTML("beforeend",'<div class="preview-flag">โหมดดูตัวอย่าง (ยังไม่ได้บันทึก)</div>');
+});
+</script>
+</body>
+</html>
