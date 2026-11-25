@@ -7,7 +7,7 @@
    ถ้าเว้น url ว่างไว้ เว็บจะใช้ข้อมูลจาก data.js แทน (โหมดออฟไลน์)
    ===================================================================== */
 window.SUPABASE_CONFIG = {
-  url: "https://dlfoffice.github.io/DLF-office/",
+  url: "https://snmpcldxpmbpseyzbahe.supabase.co",
   anonKey: "snmpcldxpmbpseyzbahe",
   table: "site_content",   // ตารางเก็บเนื้อหาเว็บ
   rowId: "main",           // แถวที่ใช้เก็บข้อมูล
